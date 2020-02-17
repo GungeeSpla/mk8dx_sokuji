@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="マリオカート8DXの即時集計ツールです。66（交流戦）、タッグ、トリプルス、フォーマンセルの4形式に対応。" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@GungeeSpla" />
+  <meta name="twitter:title"       content="マリオカート8DX 即時集計機" />
+  <meta name="twitter:description" content="マリオカート8DXの即時集計ツールです。66（交流戦）、タッグ、トリプルス、フォーマンセルの4形式に対応。" />
+  <meta name="twitter:image"       content="https://gungeespla.github.io/mk8dx_sokuji/favicon.png" />
+  <title>マリオカート8DX 即時集計機</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="assets/jquery.mysuggest.css">
+  <script type="text/javascript" src='assets/jquery.js'></script>
+  <script type="text/javascript" src='assets/jquery.mysuggest.js'></script>
+  <script type="text/javascript"   src="assets/main.min.js?Ver.0.3.2"></script>
+  <script type="text/javascript"    src="assets/ocr.min.js?Ver.0.3.2"></script>
+  <link rel="stylesheet"            href="assets/style.css?Ver.0.3.2">
+  <link rel="stylesheet" href="sokuji_ocr/assets/style.css?Ver.0.3.2">
+</head>
+<body>
+  <div id="overall-wrapper">
+  <div id="main-content">
+    <h5>© 2019-2020 <a href="https://twitter.com/GungeeSpla" target="_blank">@GungeeSpla</a></h5>
+    <h1>マリオカート8DX 即時集計機 Ver.0.3.2</h1>
+    <div id="tag-area">
+      <p class="page-tag">マリオカート</p>
+      <p class="page-tag">マリオカート8デラックス</p>
+      <p class="page-tag">マリオカート8DX</p>
+      <p class="page-tag">MX8DX</p>
+      <p class="page-tag">66</p>
+      <p class="page-tag">交流戦</p>
+      <p class="page-tag">タッグ</p>
+      <p class="page-tag">トリプルス</p>
+      <p class="page-tag">フォーマンセル</p>
+    </div>
+    <h2>1. レース数、対戦形式、チームタグを入力してください。</h2>
+    <div id="input-team-area">
+      <div class="margin">
+        <h4>レース数</h4>
+        <p class="radio-wrapper">
+        	<input type="radio" id="race-num-4" class="race-num-radio" name="race-num" value="4"><label for="race-num-4">4レース</label>
+        	<input type="radio" id="race-num-8" class="race-num-radio" name="race-num" value="8"><label for="race-num-8">8レース</label>
+        	<input type="radio" id="race-num-12" class="race-num-radio" name="race-num" value="12"><label for="race-num-12">12レース</label><br>
+        </p>
+      </div>
+      <div class="margin">
+        <h4>対戦形式</h4>
+        <p class="radio-wrapper">
+        	<input type="radio" id="race-type-2" class="race-type-radio" name="race-type" value="6"><label for="race-type-2">タッグ</label>
+        	<input type="radio" id="race-type-3" class="race-type-radio" name="race-type" value="4"><label for="race-type-3">トリプルス</label>
+        	<input type="radio" id="race-type-4" class="race-type-radio" name="race-type" value="3"><label for="race-type-4">フォーマンセル</label>
+        	<input type="radio" id="race-type-6" class="race-type-radio" name="race-type" value="2"><label for="race-type-6">66（交流戦）</label><br>
+        </p>
+      </div>
+      <div class="margin">
+        <h4>チームタグ</h4>
+        <table id="table-team-name"></table>
+      </div>
+      <div class="margin">
+        <h4>ショートカットキー</h4>
+        <table id="table-sc-key"></table>
+      </div>
+      <div class="margin">
+        <h4>点数補正</h4>
+        <table id="table-correction"></table>
+      </div>
+      <p>（一番左に自分のチームタグを入れてください）</p>
+    </div>
+    <h2>2. 順位テーブルを埋めてください。</h2>
+    <a href="javascript:void(0)" id="input-rank-description-show" show="input-rank-description" text1="説明を見る" text2="説明を隠す" style="display: inline-block;"></a><br>
+    <div id="input-rank-description" style="display: none;">
+      <ul>
+        <li>
+          <p>1レースのデータは縦1列にまとまっていて、左から順に1レース目、2レース目…と並んでいます。<br>
+          それぞれの列において、チームタグを上から下へ、1位から12位に並ぶように埋めてください。</p>
+        </li>
+        <li>
+          <p>チームパレットにあるチームをクリックすると、そのチームが選択された状態になります。<br>
+          その状態で好きなマスをクリックすると、そのマスを選択したチームで埋めることができます。</p>
+          <p>また、ドラッグ<span class="mini-text">（マウスボタンを押したままカーソルを動かす）</span>によってチームを埋めることもできます。<br>
+          チームが入力されているマスを右クリックすると、そのマスのチームを選択した状態にできます。<br>
+          マウスホイールの上下回転で選択中のチームを切り替えることもできます。</p>
+        </li>
+        <li>
+          <p>キーボードで入力したい場合は「キー入力」を選択してください。<br>
+          ショートカットキーを設定しておけば、ワンタッチでチームを入力できます。</p>
+        </li>
+        <li>
+          <p>コース名は必須ではありませんが、入力すれば集計に表示されます。</p>
+        </li>
+        <li>
+          <p>ロックボタンを押すと、その列を編集不可にすることができます。<br>
+          もう一度押すと、編集不可状態を解除できます。</p>
+        </li>
+      </ul>
+    </div>
+    <a href="javascript:void(0)" id="input-rank-description-show-2" show="input-rank-description-2" text1="スクショ読取機能に関する説明を見る(Ver.0.2.0-, PCのみ)" text2="スクショ読取機能に関する説明を隠す" style="display: inline-block;"></a>
+    <div id="input-rank-description-2" style="display: none;">
+      <ul>
+        <li>
+          <p><b>手順がやや複雑ですが、配信画面のスクショを張り付けて自動でチームを判別することができます。</b></br>
+          ただし、1レース分だけは手動で順位を入力する必要があります（標本を作成するため）。<br>
+          また、ゲーム画面の抽出が正確に行えない場合（※）、正しく動作しません。<br>
+          <span class="mini-text">※配信者がゲーム画面の周りにオリジナルのフレームを配置している場合など。<br>
+          即時集計をしようと思っている配信で使用可能かどうか、その配信者のアーカイブを利用して事前にチェックすることを推奨します。</span></p>
+          </p>
+        </li>
+        <li>
+          <p><b>標本の作成手順</b>：まず<u>1レース分の順位を手動で1位から12位まで入力</u>します。<br>
+          そして、<u>そのレースのリザルト画面が映っているスクショを撮影</u>してください。<br>
+          <span class="mini-text">スクショを撮影するには：キーボードの「PrtSc」キーを押します。ノートPCによっては「Fn」キーを同時押しする必要があります。</span></p>
+          <p>スクショを撮影できたら、順位を入力したレースの列の下にある<u>「paste」の部分を選択</u>し、<br>
+          <u>「Ctrl+V」もしくは「右クリック→貼り付け」でペースト</u>します。<br>
+          <span class="mini-text">このとき、画像ではないデータを張り付けている場合には、<br>
+          画面下部に「画像データではありません」という警告がでます。<br>
+          画像データを正しく張り付けることができていれば、画像処理中の表示が出ます。</span></p>
+          <p>画像処理が済むと「paste」の下に小さなゲーム画像が挿入されます。<br>
+          <u>これをクリックして、出てきた「標本を作る」ボタンをさらにクリック</u>すると、標本が作製されます。</p>
+        </li>
+        <li>
+          <p>標本が作成できたら、他の11レース分については、<br>
+          各レースのリザルト画面（←総合ではない）が映っているスクショを即時集計機にペーストしていくだけでOKです。</p>
+        </li>
+      </ul>
+    </div>
+    <div id="input-rank-area" user-scalable="no">
+      <div id="mouse-chaser"></div>
+      <div class="margin">
+        <h4>チームパレット</h4>
+        <div id="input-rank-palette"></div>
+      </div>
+      <div class="margin">
+        <table id="input-rank-table"></table>
+      </div>
+    </div>
+    <button id="reset-button" style="margin-top: 20px;">順位テーブルと点数補正をリセットする</button>
+    <h2>3. 即時集計結果が表示されます。</h2>
+    <p>結果は自動でコピーされますが、Edge等の一部のブラウザでは機能しないようです。<br>
+    その場合は手動でコピーしてみてください。</p>
+    <pre id="result"></pre><br>
+    <button id="copy-button">コピー</button><br>
+    <button id="overlay-button" style="display: none;">オーバーレイを表示</button>
+    <h2>詳細設定</h2>
+    <div id="cfg-area">
+      <h3>表示設定</h3>
+    	<p><input type="checkbox" id="cfg-latest-score"     class="cfg-check"><label for="cfg-latest-score"    >最新レースの得点（66のみ）</label></p>
+    	<br><p><input type="checkbox" id="cfg-latest-score-dif" class="cfg-check"><label for="cfg-latest-score-dif">最新レースの得点の点差（66のみ）</label></p>
+    	<br><p><input type="checkbox" id="cfg-total-score"      class="cfg-check"><label for="cfg-total-score"     >合計得点</label></p>
+    	<br><p><input type="checkbox" id="cfg-total-score-dif"  class="cfg-check"><label for="cfg-total-score-dif" >合計得点の点差</label></p>
+    	<br><p><input type="checkbox" id="cfg-current-rank"     class="cfg-check"><label for="cfg-current-rank"    >現在順位（66以外）</label></p>
+    	<br><p><input type="checkbox" id="cfg-target-distance"  class="cfg-check"><label for="cfg-target-distance" >目標順位との差（66以外）<span class="mini-text">※現在順位がすでに目標順位以上の場合は、目標のひとつ下の順位との点差</span></label></p>
+      <br><p>
+        <span class="radio-title">目標順位</span>
+        <span class="radio-wrapper">
+        	<span class="cfg-pass-rank" rank="1"><input type="radio" id="cfg-pass-rank-1" class="cfg-radio" name="cfg-pass-rank" value="1"><label for="cfg-pass-rank-1">1位</label></span>
+        	<span class="cfg-pass-rank" rank="2"><input type="radio" id="cfg-pass-rank-2" class="cfg-radio" name="cfg-pass-rank" value="2"><label for="cfg-pass-rank-2">2位</label></span>
+        	<span class="cfg-pass-rank" rank="3"><input type="radio" id="cfg-pass-rank-3" class="cfg-radio" name="cfg-pass-rank" value="3"><label for="cfg-pass-rank-3">3位</label></span>
+        	<span class="cfg-pass-rank" rank="4"><input type="radio" id="cfg-pass-rank-4" class="cfg-radio" name="cfg-pass-rank" value="4"><label for="cfg-pass-rank-4">4位</label></span>
+        	<span class="cfg-pass-rank" rank="5"><input type="radio" id="cfg-pass-rank-5" class="cfg-radio" name="cfg-pass-rank" value="5"><label for="cfg-pass-rank-5">5位</label></span>
+        </span>
+      </p>
+    	<br><p><input type="checkbox" id="cfg-latest-course" class="cfg-check"><label for="cfg-latest-course">コース</label></p>
+    	<br><p><input type="checkbox" id="cfg-left-race-num" class="cfg-check"><label for="cfg-left-race-num">残りレース数</label></p>
+    	<br><p><input type="checkbox" id="cfg-win-determine" class="cfg-check"><label for="cfg-win-determine">勝利確定!</label></p>
+      <br><p>
+        <span class="radio-title">自チームの強調文字（66以外）</span>
+        <span class="radio-wrapper">
+        	<input type="radio" id="cfg-emphasis-1" class="cfg-radio" name="cfg-emphasis" value="【】"><label for="cfg-emphasis-1">【】</label>
+        	<input type="radio" id="cfg-emphasis-2" class="cfg-radio" name="cfg-emphasis" value="[]"><label for="cfg-emphasis-2">[]</label>
+        	<input type="radio" id="cfg-emphasis-3" class="cfg-radio" name="cfg-emphasis" value="**"><label for="cfg-emphasis-3">**</label>
+        	<input type="radio" id="cfg-emphasis-4" class="cfg-radio" name="cfg-emphasis" value=""><label for="cfg-emphasis-4">強調しない</label>
+        </span>
+      </p>
+      <br><p>
+        <span class="radio-title">チームの区切り文字（66以外）</span>
+        <span class="radio-wrapper">
+        	<input type="radio" id="cfg-team-split-1" class="cfg-radio" name="cfg-team-split" value="／" ><label for="cfg-team-split-1">／</label>
+        	<input type="radio" id="cfg-team-split-2" class="cfg-radio" name="cfg-team-split" value=" /"><label for="cfg-team-split-2"> / </label>
+        	<input type="radio" id="cfg-team-split-3" class="cfg-radio" name="cfg-team-split" value=" -"><label for="cfg-team-split-3"> - </label>
+        	<input type="radio" id="cfg-team-split-4" class="cfg-radio" name="cfg-team-split" value="/" ><label for="cfg-team-split-4"> / <span class="mini-text">(詰め)</span></label>
+        </span>
+      </p>
+      <br><p>
+        <span class="radio-title">項目の区切り文字</span>
+        <span class="radio-wrapper">
+        	<input type="radio" id="cfg-split-1" class="cfg-radio" name="cfg-split" value="／"><label for="cfg-split-1">／</label>
+        	<input type="radio" id="cfg-split-2" class="cfg-radio" name="cfg-split" value=" /"><label for="cfg-split-2"> / </label>
+        	<input type="radio" id="cfg-split-3" class="cfg-radio" name="cfg-split" value="/" ><label for="cfg-split-3"> / <span class="mini-text">(詰め)</span></label>
+        </span>
+      </p>
+      <h3>その他の設定</h3>
+    	<p><input type="checkbox" id="cfg-auto-complement"  class="cfg-check"><label for="cfg-auto-complement">自動補完を有効にする</span></label></p>
+    	<br><p><input type="checkbox" id="cfg-course-suggest"  class="cfg-check"><label for="cfg-course-suggest">コース名の予測変換を有効にする</span></label></p>
+    	<br><p><input type="checkbox" id="cfg-on-before-unload" class="cfg-check"><label for="cfg-on-before-unload">ページを離れるときに警告する</span></label></p>
+    </div>
+    <h2>配信者向け：OBS Studioで即時集計結果を表示する</h2>
+    <p>OBS Studio上で本ツールを使い、集計結果を配信画面に表示することができます。<br>
+    集計結果のデザインは、くさあん氏（@kusaannanora）のものをお借りしています。Special Thanks!<br>
+    集計結果を配信画面に表示するためには、OBS Studio上で次の操作を行ってください。</p>
+    <ol class="overlay-desc">
+      <li><p>ソース「ブラウザ」を追加する。</p></li>
+      <li><p>プロパティを設定する。まず、URLに<br>https://gungeespla.github.io/mk8dx_sokuji/?overlay=1<br>を指定する。（末尾に「?overlay=1」が付いていることを確認する）</p></li>
+      <li><p>幅に「800」、高さに「960」を指定する。</p></li>
+      <li><p>「OK」をクリックしてプロパティの設定を完了する。</p></li>
+      <li><p>ブラウザソースの下側をトリミングする。<br>（プレビュー画面上でAltキーを押しながらソースの下側をドラッグする）</p></li>
+      <li><p>ブラウザソースの右クリックメニューから「対話」（下の方にある）をクリックする。</p></li>
+      <li><p>「'ブラウザ'との相互作用」というウィンドウが出てくるので、そのウィンドウで即時集計操作を行う。</p></li>
+    </ol>
+    <h2>アップデート履歴</h2>
+    <table id="update-rireki">
+      <tr>
+        <td><b>0.3.2</b></td>
+        <td><ul>
+          <li>キー入力で順位を入力し終わった瞬間に画面下までスクロールされてしまう問題を修正しました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.3.1</b></td>
+        <td><ul>
+          <li>コース入力時の予測変換機能をOFFにできるようにしました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.3.0</b></td>
+        <td><ul>
+          <li>配信者向けのオーバーレイ機能を追加しました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.2.5<br>0.2.4</b></td>
+        <td><ul>
+          <li>タッチデバイスにおける動作を見直しました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.2.3</b></td>
+        <td><ul>
+          <li>コース重複等のルール違反が発生した際の点数補正を付けられるようにしました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.2.2</b></td>
+        <td><ul>
+          <li>現在順位を表示するとき、同点時には「同○位」と表示するように変更しました。</li>
+          <li>区切り文字に「/ (詰め)」を追加しました。</li>
+          <li>タッチデバイスにおいて、順位テーブルをタップすると拡大が行われる件について対策を行いました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.2.1</b></td>
+        <td><ul>
+          <li>貼り付けたスクリーンショットを右下に固定できるようにしました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.2.0</b></td>
+        <td><ul>
+          <li>スクリーンショットからチームを読み取る機能を追加しました。(PCのみ)</li>
+          <li>タッチデバイスにおける動作を見直しました。</li>
+          <li>勝利確定! を表示できるようにしました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.1.1</b></td>
+        <td><ul>
+          <li>ショートカットキー設定のセーブ・ロードが正常に動作していなかった問題を修正しました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.1.0</b></td>
+        <td><ul>
+          <li>レース数を増やした際に、増やす前のレース数しか集計が行われない問題を修正しました。</li>
+          <li>順位テーブルの入力内容が自動でセーブされるようにしました。</li>
+          <li>それに伴って「順位テーブルをリセットする」ボタンを順位テーブル下部に追加しました。</li>
+          <li>点差のみを表示できるようにしました。</li>
+          <li>自チームの強調文字に「**」を追加しました。</li>
+        </ul></td>
+      </tr>
+      <tr>
+        <td><b>0.0.0</b></td>
+        <td><ul>
+          <li>リリースしました。</li>
+        </ul></td>
+      </tr>
+    </table>
+  </div>
+  <img src="sokuji_ocr/assets/rank-image-mono.png" id="rank-image-mono" style="display: none;">
+  <img src="sokuji_ocr/assets/sample-name.png" id="test-tesseract-image" style="display: none;">
+  <div id="footer-notice"></div>
+  <div id="image-viewer-wrapper">
+    <div id="image-viewer-inner">
+      <img id="image-viewer-image">
+      <div id="image-viewer-rank"><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p></div>
+      <div id="image-viewer-button"><p id="image-viewer-button-make">標本を作る</p><p id="image-viewer-button-read">チームを読み取る</p><p id="image-viewer-button-rb">右下に固定</p><p id="image-viewer-button-close">閉じる</p></div>
+    </div>
+  </div>
+  <div id="mask-notice" style="display: none;"><p>画像処理中</p><div style="transform: translateY(-85px)"><div class="loader"></div></div></div>
+  </div>
+  <div id="overlay-wrapper">
+    <div id="team-num-2" class="overlay-container respect-kusaan team-num-2"><div class="overlay-inner"><div class="header"><p class="score-dif plus num">±0</p><p class="space"></p><p class="left-race">残レース:</p></div><div class="body"><p class="team team-1"><span class="team-span">A</span></p><p class="score score-1 num">0</p><p class="split">-</p><p class="score score-2 num">0</p><p class="team team-2"><span class="team-span">B</span></p></div><div class="win" style="display: none;">win!</div></div></div>
+    <div id="team-num-3" class="overlay-container respect-kusaan team-num-6"><div class="overlay-inner"><div class="teams"><p class="team team-1"><span class="team-span">A</span></p><p class="team team-2"><span class="team-span">B</span></p><p class="team team-3"><span class="team-span">C</span></p></div><div class="scores"><p class="score score-1 num">0</p><p class="score score-2 num">0</p><p class="score score-3 num">0</p></div><div class="difs"><p class="space"></p><p class="dif dif-1 num">±0</p><p class="dif dif-2 num">±0</p></div><div class="left-race">残</div></div></div>
+    <div id="team-num-4" class="overlay-container respect-kusaan team-num-6"><div class="overlay-inner"><div class="teams"><p class="team team-1"><span class="team-span">A</span></p><p class="team team-2"><span class="team-span">B</span></p><p class="team team-3"><span class="team-span">C</span></p><p class="team team-4"><span class="team-span">D</span></p></div><div class="scores"><p class="score score-1 num">0</p><p class="score score-2 num">0</p><p class="score score-3 num">0</p><p class="score score-4 num">0</p></div><div class="difs"><p class="space"></p><p class="dif dif-1 num">±0</p><p class="dif dif-2 num">±0</p><p class="dif dif-3 num">±0</p></div><div class="left-race">残</div></div></div>
+    <div id="team-num-6" class="overlay-container respect-kusaan team-num-6"><div class="overlay-inner"><div class="teams"><p class="team team-1"><span class="team-span">A</span></p><p class="team team-2"><span class="team-span">B</span></p><p class="team team-3"><span class="team-span">C</span></p><p class="team team-4"><span class="team-span">D</span></p><p class="team team-5"><span class="team-span">E</span></p><p class="team team-6"><span class="team-span">F</span></p></div><div class="scores"><p class="score score-1 num">0</p><p class="score score-2 num">0</p><p class="score score-3 num">0</p><p class="score score-4 num">0</p><p class="score score-5 num">0</p><p class="score score-6 num">0</p></div><div class="difs"><p class="space"></p><p class="dif dif-1 num">±0</p><p class="dif dif-2 num">±0</p><p class="dif dif-3 num">±0</p><p class="dif dif-4 num">±0</p><p class="dif dif-5 num">±0</p></div><div class="left-race">残</div></div></div>
+  </div>
+  <div class="alert-wrapper">
+    <div class="alert-outer">
+      <div class="alert-inner">
+        <div class="alert-text">
+          <div class="alert-title">Title</div>
+          <div class="alert-message">Message.</div>
+        </div>
+        <div class="alert-button-wrapper alert-button-wrapper-ok-cancel">
+          <div class="alert-button alert-button-cancel">Cancel</div>
+          <div class="alert-button alert-button-ok">OK</div>
+        </div>
+        <div class="alert-button-wrapper alert-button-wrapper-only-ok">
+          <div class="alert-button alert-button-ok">OK</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+<!--x
+1th: https://youtu.be/7f1zdtpinYA?t=288
+- JPN: 1, 2, 4, 5, 11, 12
+- FR: 3, 6, 7, 8, 9, 10
+2nd: https://youtu.be/7f1zdtpinYA?t=448
+3rd: https://youtu.be/7f1zdtpinYA?t=664
+4th: https://youtu.be/7f1zdtpinYA?t=872
+5th: https://youtu.be/7f1zdtpinYA?t=1074
+6th: https://youtu.be/7f1zdtpinYA?t=1294
+-->

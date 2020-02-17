@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tesseract.jsによるOCR及びゲーム画面のトリミングのテスト</title>
+<script src='tesseract/tesseract.min.js'></script>
+<script src='assets/kanji.js'></script>
+<script src='assets/main.js'></script>
+<script src='assets/trim.js'></script>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 1em;
+  padding-bottom: 6em;
+}
+h3 {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+#cover {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #333;
+  font-size: 2em;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+#pasted-content {
+  text-align: center;
+  font-size: 2em;
+}
+  #pasted-content .titled-image-wrapper {
+    display: inline-block;
+    width: 300px;
+    margin: 10px;
+    text-align: center;
+    vertical-align: top;
+  }
+    #pasted-content .titled-image-wrapper img {
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 2px 2px 5px #ddd;
+      width: 100%;
+      max-width: 300px;
+      max-height: 169px;
+      margin: 0;
+      padding: 0;
+      transition: filter .3s ease;
+    }
+    #pasted-content .titled-image-wrapper img:hover {
+      filter: brightness(110%);
+    }
+    #pasted-content .titled-image-wrapper p {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-size: 0.5em;
+    }
+
+#paste-area,
+#sample-content img {
+  vertical-align: top;
+  display: inline-block;
+  max-width: 200px;
+  max-height: 113px;
+  border-radius: 5px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 5px #ddd;
+  transition: filter .3s ease;
+  cursor: pointer;
+}
+#paste-area {
+  width: 200px;
+}
+#sample-content img:hover {
+  filter: brightness(110%);
+}
+#paste-area {
+  height: 112px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
+<script>
+window.addEventListener('load', function(){
+  makeDebugArea('#pasted-content');
+  makeZoomImage();
+  makeTesseract('#test-tesseract-image', function(){
+    isCalculating = false;
+    notifyFooter('Tesseract.jsの初期化が完了しました。');
+    var cover = document.querySelector('#cover');
+    cover.parentNode.removeChild(cover);
+  });
+  var resultArea = document.querySelector('#pasted-content-result');
+  var pastedContents = document.querySelector('#pasted-content');
+  var sampleImages = document.querySelector('#sample-content').querySelectorAll('img');
+  var isCalculating = true;
+  for (var i = 0; i < sampleImages.length; i++) {
+    var img = sampleImages[i];
+    img.addEventListener('click', function(e) {
+      var newImg = document.createElement('img');
+      newImg.src = this.src;
+      setImage(newImg);
+    }, false);
+  }
+  setEventPasteImage('#paste-area', setImage);
+  function setImage(img) {
+    if (isCalculating) {
+      notifyFooter('計算中のプロセスがあります。');
+      return;
+    }
+    isCalculating = true;
+    pastedContents.innerHTML = '';
+    pastedContents.appendChild(createTitledImage(img, '元画像'))
+    setEventZoomImage(img);
+    setTimeout(function(){
+      trimGameScreen(img, function(elm, isTrimed) {
+        if (isTrimed) {
+          var newImg = document.createElement('img');
+          newImg.src = elm.toDataURL();
+          setEventZoomImage(newImg);
+          pastedContents.appendChild(createTitledImage(newImg, '抽出結果'));
+        }
+        scanGameScreen(elm, function(arr) {
+          resultArea.innerHTML = arr.join('<br>');
+          isCalculating = false;
+        });
+      });
+    }, 100);
+  }
+})
+</script>
+</head>
+<body>
+
+<div id="cover">Tesseract.jsの初期化中</div>
+<h3>画像</h3>
+<div id="sample-content">
+<img src="assets/sample-ss-01.png">
+<img src="assets/sample-ss-02.png">
+<img src="assets/sample-ss-03.png">
+<img src="assets/sample-ss-04.png">
+<img src="assets/sample-ss-05.png">
+<img src="assets/sample-ss-06.png">
+<div type="text" id="paste-area"></div>
+</div>
+
+<h3>出力</h3>
+<div id="pasted-content"></div>
+
+<h3>順位</h3>
+<div id="pasted-content-result"></div>
+
+<img src="assets/rank-image-mono.png" id="rank-image-mono" style="display: none;">
+<img src="assets/sample-name.png" id="test-tesseract-image" style="display: none;">
+<div id="image-viewer-wrapper">
+  <div id="image-viewer-inner">
+    <img id="image-viewer-image">
+    <img id="image-viewer-close" src="assets/close.png">
+  </div>
+</div>
+<div id="footer-notice"></div>
+
+</body>
+</html>
