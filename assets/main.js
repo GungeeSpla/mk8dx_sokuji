@@ -1,7 +1,6 @@
 //window.localStorage.clear();
-//window.localStorage.setItem('mk8dx-sokuji', '{"teamNum":6,"raceNum":12,"teamNames":["おかし","たまげた","CCC","DDD","EEE","FFF"],"shortCutKeys":["o","t","c","d","e","f"],"tallyConfig":{"onBeforeUnload":false,"isEnabledComplement":true,"latestScore":true,"latestScoreDif":false,"latestCource":true,"totalScoreDif":true,"leftRaceNum":true,"currentRank":true,"targetDistance":true,"emphasisStr":"【】","emphasisStart":"【","emphasisEnd":"】","splitStr":"／","teamSplitStr":"／","passRank":2}}');
 'use strict';
-console.log('main.js is ver.0.3.2');
+console.log('main.js is ver.0.3.3');
 var SCORES = [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 var browser = (() => {
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -1260,18 +1259,34 @@ function updateRace(race, doComplement) {
   }
   // 補完可能かどうか調べる
   var isCanComplement = doComplement;
+  var isTooMany = false;
   if (doComplement) {
+    // たとえば3チームで戦っているならば、1チームあたりのプレイヤーは4人
     var teamMenberNum = playerNum / teamNum; // eg. 4 = 12 / 3;
+    // 8人分入力されていれば補完が可能
     var canComplementNum = teamMenberNum * (teamNum - 1); // eg. 8 = 4 * (3 - 1);
     var complementTeam = -1, complementTeamName;
+    // 8人分以上の入力があり、かつ、12人分は入力されていない、というような場合
     if (inputedRankNum >= canComplementNum && inputedRankNum < playerNum) {
+      // それぞれのチームについて走査
       for (var i = 0; i < teamNum; i++) {
+        // チームの入力数で場合分け
         if (teamCounts[i] === teamMenberNum) {
+          // チームの入力数がチームあたりのメンバー数と一致するならば
+          // なにもしなくていい
+        } else if (teamCounts[i] > teamMenberNum) {
+          // チームの入力数がチームあたりのメンバー数を超えるならば
+          // 超過フラグを立てる
+          isTooMany = true;
         } else if (teamCounts[i] < teamMenberNum) {
+          // チームの入力数がチームあたりのメンバー数を下回っているならば
+          // 補完対象が決定済みかどうかで場合分け
           if (complementTeam === -1) {
+            // 補完対象がまだ決まっていないならばこのチームを補完対象にする
             complementTeam = i;
             complementTeamName = teamNames[complementTeam];
           } else {
+            // 補完対象がもう決まっているならば（補完対象が複数あるならば）補完処理は不可能
             isCanComplement = false;
             break;
           }
@@ -1290,13 +1305,12 @@ function updateRace(race, doComplement) {
     }
   }
   // 入力が完了しているかどうか調べる
-  // プレイヤーと同じ数のチームタグが入力されており
-  // どのチームタグの数も等しいなら入力が完了している
   var stateType;
-  if (isCanComplement) {
+  // チーム入力数とプレイヤー数が一致するかどうか
+  if (inputedRankNum === playerNum) {
+    // チーム入力数とプレイヤー数が一致する場合はとりあえず complete
     stateType = 'complete';
-  } else if (inputedRankNum === playerNum) {
-    stateType = 'complete';
+    // それぞれのチーム入力数が一致しないならば error に書き換える
     for (i = 1; i < teamNum; i++) {
       if (teamCounts[0] !== teamCounts[i]) {
         stateType = 'error';
@@ -1304,7 +1318,21 @@ function updateRace(race, doComplement) {
       }
     }
   } else {
-    stateType = 'lack';
+    // チーム入力数とプレイヤー数が一致しなかった場合
+    // 補完可能かどうか
+    if (isCanComplement) {
+      // 補完可能な場合
+      if (isTooMany) {
+        // 超過フラグが立っているならば error
+        stateType = 'error';
+      } else {
+        // 超過フラグが立っていないならば complete
+        stateType = 'complete';
+      }
+    } else {
+      // 補完可能ではないならば lack
+      stateType = 'lack';
+    }
   }
   var isChangeState = (beforeStateType !== stateType);
   if (isChangeState) {
