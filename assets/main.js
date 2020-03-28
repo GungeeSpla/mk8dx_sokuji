@@ -1,6 +1,6 @@
 //window.localStorage.clear();
 'use strict';
-console.log('main.js is ver.0.3.3');
+console.log('main.js is ver.0.3.4');
 var SCORES = [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 var browser = (() => {
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -1278,6 +1278,8 @@ function updateRace(race, doComplement) {
           // チームの入力数がチームあたりのメンバー数を超えるならば
           // 超過フラグを立てる
           isTooMany = true;
+          // 補完不可
+          isCanComplement = false;
         } else if (teamCounts[i] < teamMenberNum) {
           // チームの入力数がチームあたりのメンバー数を下回っているならば
           // 補完対象が決定済みかどうかで場合分け
