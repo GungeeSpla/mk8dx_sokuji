@@ -1,6 +1,8 @@
-//window.localStorage.clear();
+/*
+window.localStorage.clear();
+*/
 'use strict';
-console.log('main.js is ver.0.3.4');
+console.log('main.js is ver.0.4.0');
 var SCORES = [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 var browser = (() => {
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -42,21 +44,21 @@ var isPC = (os === 'windows' || os === 'mac');
 var isTouchDevice = ('ontouchstart' in window);
 var mousedownEvent = isTouchDevice ? 'click' : 'mousedown';
 var queries = (() => {
-	var queryStr = window.location.search.slice(1);
-			queries = {};
-	if (!queryStr) {
-		return queries;
-	}
-	queryStr.split('&').forEach(function(queryStr) {
-		var queryArr = queryStr.split('=');
-		if (queryArr[1]) {
-			queries[queryArr[0]] = queryArr[1];
-		}
-		else {
-			queries[queryArr[0]] = '';
-		}
-	});
-	return queries;
+  var queryStr = window.location.search.slice(1);
+      queries = {};
+  if (!queryStr) {
+    return queries;
+  }
+  queryStr.split('&').forEach(function(queryStr) {
+    var queryArr = queryStr.split('=');
+    if (queryArr[1]) {
+      queries[queryArr[0]] = queryArr[1];
+    }
+    else {
+      queries[queryArr[0]] = '';
+    }
+  });
+  return queries;
 })();
 var isOverlay = (queries.overlay === '1');
 var playerNum = 12;
@@ -64,8 +66,6 @@ var teamTableIndex = 10;
 var scKeyIndex = 20;
 var correctionIndex = 30;
 var rankTableIndex = 40;
-var correctionValues = [0, 0, 0, 0, 0, 0];
-var teamMaxNum = 6;
 var currentPen = -1;
 var mouseChaser;
 var penDown = false;
@@ -82,10 +82,15 @@ var saveTargetVariables = [
 var isEnabledSS = isPC;
 var teamNum = 2;
 var raceNum = 12;
-var maxRaceNum = 12;
+var teamMaxNum = 12;
+var maxRaceNum = 48;
 var maxPlayerNum = 12;
-var teamNames = ['AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF'];
-var shortCutKeys = ['a', 'b', 'c', 'd', 'e', 'f'];
+var initialCorrectionValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var correctionValues        = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var initialTeamNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+var teamNames        = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+var initialShortCutKeys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'];
+var shortCutKeys        = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'];
 var tallyConfig = {
   onBeforeUnload: false,     // ページ遷移時警告
   isEnabledComplement: true, // 自動補完
@@ -104,7 +109,8 @@ var tallyConfig = {
   emphasisEnd: '',       // 強調終了
   splitStr: '／',        // 区切り文字
   teamSplitStr: '／',    // チームの区切り文字
-  passRank: 2            // 目標順位
+  passRank: 2,           // 目標順位
+  isEnabledSS: true      // スクショ機能
 };
 var overlayWindow = null;
 
@@ -125,8 +131,43 @@ window.addEventListener('load', function(){
   }
   logger.log('document loaded');
   logger.log('initializing mk8dx-sokuji');
-  initInputDataVariable();  // inputData変数
+  initInputDataVariable();  // inputRankData変数
   loadStorage();            // ロード
+  // Ver.0.4.0
+  // 最大レース数が12→48に増えた
+  // inputRankDataの長さが48未満のまま進んでしまうとバグるので、
+  // 長さが48未満であれば足りない分を補完してやる
+  if (inputRankData.length < maxRaceNum) {
+    for (var i = inputRankData.length; i < maxRaceNum; i++) {
+      inputRankData[i] = [];
+      for (var j = 0; j < maxPlayerNum; j++) {
+        inputRankData[i][j] = '-1';
+      }
+    }
+    console.log('inputRankDataに足りない長さを補完しました');
+    console.log(inputRankData);
+  }
+  if (correctionValues.length < teamMaxNum) {
+    for (var i = correctionValues.length; i < teamMaxNum; i++) {
+      correctionValues[i] = initialCorrectionValues[i];
+    }
+    console.log('correctionValuesに足りない長さを補完しました');
+    console.log(correctionValues);
+  }
+  if (teamNames.length < teamMaxNum) {
+    for (var i = teamNames.length; i < teamMaxNum; i++) {
+      teamNames[i] = initialTeamNames[i];
+    }
+    console.log('teamNamesに足りない長さを補完しました');
+    console.log(teamNames);
+  }
+  if (shortCutKeys.length < teamMaxNum) {
+    for (var i = shortCutKeys.length; i < teamMaxNum; i++) {
+      shortCutKeys[i] = initialShortCutKeys[i];
+    }
+    console.log('shortCutKeysに足りない長さを補完しました');
+    console.log(shortCutKeys);
+  }
   setEventShowMore('#input-rank-description-show');   // 説明を見るボタン
   setEventShowMore('#input-rank-description-show-2'); // 説明を見るボタン
   if (!isEnabledSS) {
@@ -154,7 +195,7 @@ window.addEventListener('load', function(){
     function reset() {
       sampleTeamData = null;
       initInputDataVariable();
-      correctionValues = [0, 0, 0, 0, 0, 0];
+      correctionValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       updateInputTeamNameTable();
       setSaveStorage();
     }
@@ -209,6 +250,7 @@ function initConfigElements() {
     {key: 'winDetermine',        id: 'cfg-win-determine'},
     {key: 'onBeforeUnload',      id: 'cfg-on-before-unload'},
     {key: 'isEnabledSuggest',    id: 'cfg-course-suggest'},
+    {key: 'isEnabledSS',         id: 'cfg-screenshot'},
   ].map(obj => {
     var elm = document.getElementById(obj.id);
     if (tallyConfig[obj.key] === true) {
@@ -225,6 +267,20 @@ function initConfigElements() {
     elm.addEventListener('change', function(e) {
       tallyConfig[obj.key] = this.checked;
       setSaveStorage();
+      if (this.id === 'cfg-screenshot') {
+        var trs = document.querySelectorAll('.for-screenshot');
+        var value;
+        if (this.checked) {
+        	value = '';
+        } else {
+        	value = 'none';
+        }
+      	Array.prototype.forEach.call(trs, (tr) => {
+      		console.log(tr);
+      		console.log(value);
+      		tr.style.setProperty('display', value);
+      	});
+      }
       if (this.id === 'cfg-on-before-unload') {
         if (this.checked) {
           window.onbeforeunload = function() {
@@ -414,13 +470,17 @@ function makeInputTeamNameTable() {
   var tr = document.createElement('tr');
   for (var x = 0; x < w; x++) {
     var td = document.createElement('td');
-    var label = ['A', 'B', 'C', 'D', 'E', 'F'][x];
+    var label = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'][x];
     var input = createInput({placeholder: label, value: teamNames[x]});
     input.setAttribute('tabIndex', teamTableIndex + x);
     input.setAttribute('id', 'input-team-name-' + x);
     input.addEventListener('input', makeInputRankPalette, false);
     td.appendChild(input);
     tr.appendChild(td);
+    if (teamNum === 12 && x === 5) {
+  		table.appendChild(tr);
+      tr = document.createElement('tr');
+    }
   }
   table.appendChild(tr);
   // ショートカットキー
@@ -436,6 +496,10 @@ function makeInputTeamNameTable() {
     input.addEventListener('input', updateSCKey, false);
     td.appendChild(input);
     tr.appendChild(td);
+    if (teamNum === 12 && x === 5) {
+  		table2.appendChild(tr);
+      tr = document.createElement('tr');
+    }
   }
   table2.appendChild(tr);
   // 補正値
@@ -451,6 +515,10 @@ function makeInputTeamNameTable() {
     input.addEventListener('input', updateCorrection, false);
     td.appendChild(input);
     tr.appendChild(td);
+    if (teamNum === 12 && x === 5) {
+  		table3.appendChild(tr);
+      tr = document.createElement('tr');
+    }
   }
   table3.appendChild(tr);
 }
@@ -579,6 +647,12 @@ function makeInputRankPalette() {
       // パレットクリック時の挙動
       setPaletteClickEvent(palette, i);
       area.appendChild(palette);
+      if (teamNum === 12 && i === teamNum) {
+      	var br = document.createElement('br');
+      	var centerPalette = document.getElementById('palette-6');
+      	area.insertBefore(br, centerPalette);
+      	area.insertBefore(palette, centerPalette);
+      }
     }
     if (!isInitialized) {
       area.querySelector('#palette--1').classList.add('selected');
@@ -705,6 +779,13 @@ function makeInputRankTable() {
   var h = playerNum + MARGIN_TOP + MARGIN_BOTTOM;
   for (var y = 0; y < h; y++) {
     var tr = document.createElement('tr');
+    // スクショ関連
+    if (y === playerNum + MARGIN_TOP + PASTE_LINE || y === playerNum + MARGIN_TOP + PASTED_IMAGE_LINE) {
+    	tr.classList.add('for-screenshot');
+    	if (!tallyConfig.isEnabledSS) {
+    		tr.style.setProperty('display', 'none');
+    	}
+    }
     if (y === playerNum + MARGIN_TOP) tr.classList.add('rank-end-tr');
     for (var x = 0; x < w; x++) {
       if ((y === 0 && x > 1) || (x === 0 && y === 1)) {
@@ -1661,6 +1742,9 @@ function createTallyText(sortedScoreObjects, lastCourseStr, leftRace) {
     case 6: // 6チーム:タッグ
       oneRaceMaxDif = 24; // (15+12)-(1+2)
       break;
+    case 12: // 12チーム:個人戦
+      oneRaceMaxDif = 14; // (15)-(1)
+      break;
   }
   // 残りのレースで付きうる最大の点差
   var possibleMaxDif = leftRace * oneRaceMaxDif;
@@ -1953,7 +2037,7 @@ var MK8DX_COURSES = [
   ['空港', 'くうこう', 'kuukou'],
   ['ドルみ', 'dorumi'],
   ['岬', 'みさき', 'misaki'],
-  ['エレドロ', 'eredoro'],
+  ['エレドリ', 'eredori'],
   ['ワリスノ', 'warisuno'],
   ['雪山', 'ゆきやま', 'yukiyama'],
   ['スカガ', 'sukaga'],
@@ -1993,7 +2077,7 @@ var MK8DX_COURSES = [
   '64虹',
   ['ワリ鉱', 'warikou'],
   'SFC虹',
-  ['ツルツル', 'turuturu', 'tsurutsuru'],
+  ['ツツツ', 'tututu', 'tsutsutsu'],
   ['ハイラル', 'hairaru'],
   ['ネオパ', 'neopa'],
   ['リボン', 'ribon'],

@@ -14,16 +14,19 @@
   <link rel="stylesheet" href="assets/jquery.mysuggest.css">
   <script type="text/javascript" src='assets/jquery.js'></script>
   <script type="text/javascript" src='assets/jquery.mysuggest.js'></script>
-  <script type="text/javascript"   src="assets/main.min.js?Ver.0.3.4"></script>
+  <!--
+  <script type="text/javascript"   src="assets/main.js"></script>
+  -->
+  <script type="text/javascript"   src="assets/main.min.js?Ver.0.4.0"></script>
   <script type="text/javascript"    src="assets/ocr.min.js?Ver.0.3.3"></script>
-  <link rel="stylesheet"            href="assets/style.css?Ver.0.3.3">
+  <link rel="stylesheet"            href="assets/style.css?Ver.0.4.0">
   <link rel="stylesheet" href="sokuji_ocr/assets/style.css?Ver.0.3.3">
 </head>
 <body>
   <div id="overall-wrapper">
   <div id="main-content">
     <h5>© 2019-2020 <a href="https://twitter.com/GungeeSpla" target="_blank">@GungeeSpla</a></h5>
-    <h1>マリオカート8DX 即時集計機 Ver.0.3.4</h1>
+    <h1>マリオカート8DX 即時集計機 Ver.0.4.0</h1>
     <div id="tag-area">
       <p class="page-tag">マリオカート</p>
       <p class="page-tag">マリオカート8デラックス</p>
@@ -42,27 +45,31 @@
         <p class="radio-wrapper">
         	<input type="radio" id="race-num-4" class="race-num-radio" name="race-num" value="4"><label for="race-num-4">4レース</label>
         	<input type="radio" id="race-num-8" class="race-num-radio" name="race-num" value="8"><label for="race-num-8">8レース</label>
-        	<input type="radio" id="race-num-12" class="race-num-radio" name="race-num" value="12"><label for="race-num-12">12レース</label><br>
+        	<input type="radio" id="race-num-12" class="race-num-radio" name="race-num" value="12"><label for="race-num-12">12レース</label>
+        	<input type="radio" id="race-num-24" class="race-num-radio" name="race-num" value="24"><label for="race-num-24">24レース</label>
+        	<input type="radio" id="race-num-36" class="race-num-radio" name="race-num" value="36"><label for="race-num-36">36レース</label>
+        	<input type="radio" id="race-num-48" class="race-num-radio" name="race-num" value="48"><label for="race-num-48">48レース</label><br>
         </p>
       </div>
       <div class="margin">
         <h4>対戦形式</h4>
         <p class="radio-wrapper">
+        	<input type="radio" id="race-type-1" class="race-type-radio" name="race-type" value="12"><label for="race-type-1">個人</label>
         	<input type="radio" id="race-type-2" class="race-type-radio" name="race-type" value="6"><label for="race-type-2">タッグ</label>
         	<input type="radio" id="race-type-3" class="race-type-radio" name="race-type" value="4"><label for="race-type-3">トリプルス</label>
         	<input type="radio" id="race-type-4" class="race-type-radio" name="race-type" value="3"><label for="race-type-4">フォーマンセル</label>
         	<input type="radio" id="race-type-6" class="race-type-radio" name="race-type" value="2"><label for="race-type-6">66（交流戦）</label><br>
         </p>
       </div>
-      <div class="margin">
+      <div class="margin scroll-x">
         <h4>チームタグ</h4>
         <table id="table-team-name"></table>
       </div>
-      <div class="margin">
+      <div class="margin scroll-x">
         <h4>ショートカットキー</h4>
         <table id="table-sc-key"></table>
       </div>
-      <div class="margin">
+      <div class="margin scroll-x">
         <h4>点数補正</h4>
         <table id="table-correction"></table>
       </div>
@@ -125,12 +132,12 @@
         </li>
       </ul>
     </div>
+    <div class="margin">
+      <h4>チームパレット</h4>
+      <div id="input-rank-palette"></div>
+    </div>
     <div id="input-rank-area" user-scalable="no">
       <div id="mouse-chaser"></div>
-      <div class="margin">
-        <h4>チームパレット</h4>
-        <div id="input-rank-palette"></div>
-      </div>
       <div class="margin">
         <table id="input-rank-table"></table>
       </div>
@@ -194,6 +201,7 @@
     	<p><input type="checkbox" id="cfg-auto-complement"  class="cfg-check"><label for="cfg-auto-complement">自動補完を有効にする</span></label></p>
     	<br><p><input type="checkbox" id="cfg-course-suggest"  class="cfg-check"><label for="cfg-course-suggest">コース名の予測変換を有効にする</span></label></p>
     	<br><p><input type="checkbox" id="cfg-on-before-unload" class="cfg-check"><label for="cfg-on-before-unload">ページを離れるときに警告する</span></label></p>
+    	<br><p><input type="checkbox" id="cfg-screenshot" class="cfg-check"><label for="cfg-screenshot">スクショ機能を有効にする</span></label></p>
     </div>
     <h2>配信者向け：OBS Studioで即時集計結果を表示する</h2>
     <p>OBS Studio上で本ツールを使い、集計結果を配信画面に表示することができます。<br>
@@ -208,9 +216,19 @@
       <li><p>ブラウザソースの右クリックメニューから「対話」（下の方にある）をクリックする。</p></li>
       <li><p>「'ブラウザ'との相互作用」というウィンドウが出てくるので、そのウィンドウで即時集計操作を行う。</p></li>
     </ol>
-    ※OBSのブラウザ内では日本語が入力できないようです。日本語を入力したいときは他の場所（『メモ帳』アプリなど）に日本語を書き、それをCtrl+Cでコピーしてから、Ctrl+VでOBSのブラウザ内に貼りつけてみてください。
+    ※OBSのブラウザ内では日本語が入力できないようです。日本語を入力したいときは他の場所（『メモ帳』アプリなど）に日本語を入力し、それをCtrl+Cでコピーしてから、Ctrl+VでOBSのブラウザ内に貼りつけてみてください。
     <h2>アップデート履歴</h2>
     <table id="update-rireki">
+      <tr>
+        <td><b>0.4.0</b></td>
+        <td><ul>
+          <li>選択可能なレース数に24、36、48を追加しました。</li>
+          <li>選択可能な形式に個人戦を追加しました。</li>
+          <li>コース名の入力補完候補を一部修正しました。</li>
+          <li>スクショ機能のON/OFFを設定できるようにし、OFFにした場合はチーム入力部分に表示しないようにしました。</li>
+          <li>チーム入力部分を横にスクロールしても、チームパレットはスクロールされずに固定位置で表示されるように変更しました。</li>
+        </ul></td>
+      </tr>
       <tr>
         <td><b>0.3.4<br>0.3.3</b></td>
         <td><ul>

@@ -8,18 +8,33 @@ body {
   padding: 4em 0em;
   color: #333;
   background-color: #f6f6f6;
-  --team-bgcolor-0: #e91e63;
-  --team-bgcolor-1: #03a9f4;
-  --team-bgcolor-2: #ffeb3b;
-  --team-bgcolor-3: #4caf50;
-  --team-bgcolor-4: #ff9800;
-  --team-bgcolor-5: #673ab7;
+  --team-bgcolor-0: #E4007F; /* 濃桃 */
+  --team-bgcolor-1: #00A0E9; /* 水 */
+  --team-bgcolor-2: #FFF100; /* 黄 */
+  --team-bgcolor-3: #009944; /* 緑 */
+  --team-bgcolor-4: #F39800; /* 橙 */
+  --team-bgcolor-5: #920783; /* 紫 */
+  
+  --team-bgcolor-6: #E60012; /* 赤 */
+  --team-bgcolor-7: #0068B7; /* 青 */
+  --team-bgcolor-8: #8FC31F; /* 黄緑 */
+  --team-bgcolor-9: #009E96; /* 青緑 */
+  --team-bgcolor-10: #E4007F; /* 桃 */
+  --team-bgcolor-11: #1D2088; /* 藍 */
+  
   --team-textcolor-0: #fff;
   --team-textcolor-1: #fff;
   --team-textcolor-2: #000;
   --team-textcolor-3: #fff;
-  --team-textcolor-4: #fff;
+  --team-textcolor-4: #000;
   --team-textcolor-5: #fff;
+  
+  --team-textcolor-6: #fff;
+  --team-textcolor-7: #fff;
+  --team-textcolor-8: #000;
+  --team-textcolor-9: #fff;
+  --team-textcolor-10: #fff;
+  --team-textcolor-11: #fff;
 }
 pre {
   font-family: sans-serif;
@@ -376,10 +391,37 @@ button {
       color: var(--team-textcolor-5);
     }
     .team-6 {
+      background-color: var(--team-bgcolor-6);
+      color: var(--team-textcolor-6);
+    }
+    .team-7 {
+      background-color: var(--team-bgcolor-7);
+      color: var(--team-textcolor-7);
+    }
+    .team-8 {
+      background-color: var(--team-bgcolor-8);
+      color: var(--team-textcolor-8);
+    }
+    .team-9 {
+      background-color: var(--team-bgcolor-9);
+      color: var(--team-textcolor-9);
+    }
+    .team-10 {
+      background-color: var(--team-bgcolor-10);
+      color: var(--team-textcolor-10);
+    }
+    .team-11 {
+      background-color: var(--team-bgcolor-11);
+      color: var(--team-textcolor-11);
+    }
+    .team-12 {
       background-color: #fff;
       color: #666;
     }
     #input-team-area {
+    }
+    .scroll-x {
+    	overflow-x: auto;
     }
   #cfg-area p {
     margin: 0.5em 0em 0.5em 0em;
