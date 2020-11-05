@@ -2,7 +2,7 @@
 window.localStorage.clear();
 */
 'use strict';
-console.log('main.js is ver.0.4.1');
+console.log('main.js is ver.0.4.2');
 var SCORES = [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 var browser = (() => {
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -132,7 +132,10 @@ window.addEventListener('load', function(){
     	document.querySelector('#overlay-wrapper').style.setProperty('background', '#' + queries.outer_color);
     }
     if (queries.inner_color) {
-    	document.querySelector('.overlay-inner').style.setProperty('background', '#' + queries.inner_color);
+    	var arr = document.querySelectorAll('.overlay-inner');
+    	for (var i = 0; i < arr.length; i++) {
+    		arr[i].style.setProperty('background', '#' + queries.inner_color);
+    	}
     }
     
   }
