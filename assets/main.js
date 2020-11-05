@@ -2,7 +2,7 @@
 window.localStorage.clear();
 */
 'use strict';
-console.log('main.js is ver.0.4.0');
+console.log('main.js is ver.0.4.1');
 var SCORES = [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 var browser = (() => {
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -128,6 +128,13 @@ window.onbeforeunload = function() {
 window.addEventListener('load', function(){
   if (isOverlay) {
     document.body.classList.add('overlay-mode');
+    if (queries.outer_color) {
+    	document.querySelector('#overlay-wrapper').style.setProperty('background', '#' + queries.outer_color);
+    }
+    if (queries.inner_color) {
+    	document.querySelector('.overlay-inner').style.setProperty('background', '#' + queries.inner_color);
+    }
+    
   }
   logger.log('document loaded');
   logger.log('initializing mk8dx-sokuji');
