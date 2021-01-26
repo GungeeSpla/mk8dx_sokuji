@@ -1793,7 +1793,8 @@ function createTallyText(sortedScoreObjects, lastCourseStr, leftRace) {
           $win.style.setProperty('display', isWinDetermine ? 'block' : 'none');
         });
         $container.querySelectorAll('.left-race').forEach(($race, i) => {
-          $race.innerText = `残レース:${leftRace}`;
+          const baseText = queries.race_left_str ? decodeURIComponent(queries.race_left_str) : '残レース:__num__';
+          $race.innerText = baseText.replace('__num__', leftRace);
         });
       } else {
         $container.querySelectorAll('.score').forEach(($score, i) => {
@@ -1806,7 +1807,8 @@ function createTallyText(sortedScoreObjects, lastCourseStr, leftRace) {
           $dif.innerText = parseSignedNum(sortedScoreObjects[i].totalScore - sortedScoreObjects[i + 1].totalScore);
         });
         $container.querySelectorAll('.left-race').forEach(($race, i) => {
-          $race.innerText = `残${leftRace}`;
+          const baseText = queries.race_left_str_short ? decodeURIComponent(queries.race_left_str_short) : '残__num__';
+          $race.innerText = baseText.replace('__num__', leftRace);
         });
       }
       $container.querySelectorAll('.team-span').forEach($span => {
