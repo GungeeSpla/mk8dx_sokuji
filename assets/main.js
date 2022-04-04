@@ -2,7 +2,7 @@
 window.localStorage.clear();
 */
 'use strict';
-console.log('main.js is ver.0.4.2');
+console.log('main.js is ver.0.5.0');
 var SCORES = [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 var browser = (() => {
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -83,7 +83,7 @@ var isEnabledSS = isPC;
 var teamNum = 2;
 var raceNum = 12;
 var teamMaxNum = 12;
-var maxRaceNum = 48;
+var maxRaceNum = 96;
 var maxPlayerNum = 12;
 var initialCorrectionValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var correctionValues        = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -2098,6 +2098,19 @@ var MK8DX_COURSES = [
   ['リンリン', 'rinrin'],
   'BB',
   ['ビッグブルー', 'bigguburu-'],
+  ['パリ', 'pari'],
+  ['パリプロ', 'paripuro'],
+  ['キノサ', 'kinosa'],
+  ['チョコ山', 'chokoyama', 'tyokoyama'],
+  ['チョコマ', 'chokoma', 'tyokoma'],
+  ['ココモ', 'kokomo'],
+  ['東京', 'to-kyo-'],
+  ['リッジ', 'rijji', 'rizzi'],
+  ['リッジウェイ', 'rijjiwei', 'rizziwei'],
+  ['GBAスカガ', 'gbasukaga'],
+  ['グバスカ', 'gubasuka'],
+  ['忍道', 'nindou', 'ninndou'],
+  ['ニンニン', 'ninin', 'ninnnin', 'ninnninn'],
 ];
 
 /* 
