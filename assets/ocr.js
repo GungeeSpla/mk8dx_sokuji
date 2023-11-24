@@ -253,7 +253,7 @@ function checkScanable(ssImage, callback) {
   const isScanable = (d < 2000);
   if (isScanable) console.log('- no need to trim');
   else console.log('- please trim');
-  return isScanable;
+  return { isScanable, canvas };
 }
 /** trimGameScreen(ssImage, success, error)
  */
@@ -263,9 +263,9 @@ function trimGameScreen(ssImage, success, error) {
     _ssImage.src = ssImage;
     ssImage = _ssImage;
   }
-  const isScanable = checkScanable(ssImage);
+  const { isScanable, canvas } = checkScanable(ssImage);
   if (isScanable) {
-    if (typeof success === 'function') success(ssImage, false);
+    if (typeof success === 'function') success(canvas, false);
   } else {
     trimGameScreenByRect(ssImage, success, error);
   }
